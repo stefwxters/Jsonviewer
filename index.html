@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON Viewer & Formatter - Free Online JSON Beautifier</title>
-    <meta name="description" content="Validate, format, and beautify JSON data instantly. A free, secure online JSON viewer with syntax highlighting and collapsible nodes for developers." />
+    <meta name="description"
+        content="Validate, format, and beautify JSON data instantly. A free, secure online JSON viewer with syntax highlighting and collapsible nodes for developers." />
     <link rel="canonical" href="https://stefwxters.github.io/Jsonviewer/" />
-    
+
     <meta property="og:title" content="JSON Viewer & Formatter" />
     <meta property="og:description" content="The fastest way to read and format JSON data online." />
     <meta property="og:type" content="website" />
@@ -39,7 +41,11 @@
             --json-num: #0984e3;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -59,8 +65,15 @@
             padding: 40px 0;
         }
 
-        header h1 { font-size: 2.2rem; color: #1e272e; margin-bottom: 10px; }
-        header p { color: #7f8c8d; }
+        header h1 {
+            font-size: 2.2rem;
+            color: #1e272e;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #7f8c8d;
+        }
 
         .tool-grid {
             display: grid;
@@ -76,7 +89,7 @@
             display: flex;
             flex-direction: column;
             height: 600px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
         }
 
         .panel-header {
@@ -99,10 +112,18 @@
             font-size: 13px;
         }
 
-        .btn-primary { background: var(--accent-color); color: white; border: none; }
-        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+        }
 
-        textarea, #jsonOutput {
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        textarea,
+        #jsonOutput {
             flex: 1;
             padding: 20px;
             font-family: 'SF Mono', 'Roboto Mono', monospace;
@@ -114,13 +135,28 @@
             white-space: pre;
         }
 
-        #jsonOutput { background: #fafafa; }
+        #jsonOutput {
+            background: #fafafa;
+        }
 
         /* Syntax Highlighting */
-        .json-key { color: var(--json-key); font-weight: bold; }
-        .json-string { color: var(--json-string); }
-        .json-num { color: var(--json-num); }
-        .collapsible { cursor: pointer; color: #636e72; }
+        .json-key {
+            color: var(--json-key);
+            font-weight: bold;
+        }
+
+        .json-string {
+            color: var(--json-string);
+        }
+
+        .json-num {
+            color: var(--json-num);
+        }
+
+        .collapsible {
+            cursor: pointer;
+            color: #636e72;
+        }
 
         /* FAQ Section */
         .faq-section {
@@ -128,7 +164,10 @@
             margin: 0 auto 60px;
         }
 
-        .faq-section h2 { margin-bottom: 20px; text-align: center; }
+        .faq-section h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
         details {
             background: var(--secondary-bg);
@@ -138,7 +177,10 @@
             cursor: pointer;
         }
 
-        summary { font-weight: 600; outline: none; }
+        summary {
+            font-weight: 600;
+            outline: none;
+        }
 
         footer {
             text-align: center;
@@ -148,11 +190,17 @@
         }
 
         @media (max-width: 850px) {
-            .tool-grid { grid-template-columns: 1fr; }
-            .panel { height: 400px; }
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                height: 400px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -187,25 +235,30 @@
 
         <section class="faq-section">
             <h2>Frequently Asked Questions</h2>
-            
+
             <details>
                 <summary>What is a JSON Formatter?</summary>
-                <p>A JSON formatter is a tool that takes "minified" or messy JSON code and applies indentation and line breaks to make it human-readable. It also highlights syntax errors to help developers debug data structures.</p>
+                <p>A JSON formatter is a tool that takes "minified" or messy JSON code and applies indentation and line
+                    breaks to make it human-readable. It also highlights syntax errors to help developers debug data
+                    structures.</p>
             </details>
 
             <details>
                 <summary>Is my data secure using this online tool?</summary>
-                <p>Yes. This tool processes all data locally in your browser using JavaScript. Your JSON data is never sent to a server, ensuring total privacy and security for sensitive information.</p>
+                <p>Yes. This tool processes all data locally in your browser using JavaScript. Your JSON data is never
+                    sent to a server, ensuring total privacy and security for sensitive information.</p>
             </details>
 
             <details>
                 <summary>Why is valid JSON important?</summary>
-                <p>JSON (JavaScript Object Notation) is the standard format for data exchange between servers and web applications. Valid JSON ensures that APIs can communicate without errors.</p>
+                <p>JSON (JavaScript Object Notation) is the standard format for data exchange between servers and web
+                    applications. Valid JSON ensures that APIs can communicate without errors.</p>
             </details>
-            
+
             <details>
                 <summary>How do I convert JSON to a readable format?</summary>
-                <p>Simply paste your raw JSON string into our input box and click "Beautify". Our tool will instantly add proper indentation and syntax highlighting.</p>
+                <p>Simply paste your raw JSON string into our input box and click "Beautify". Our tool will instantly
+                    add proper indentation and syntax highlighting.</p>
             </details>
         </section>
     </div>
@@ -268,8 +321,8 @@
 
         function downloadJSON() {
             const text = document.getElementById('jsonOutput').innerText;
-            if(!text) return;
-            const blob = new Blob([text], {type: "application/json"});
+            if (!text) return;
+            const blob = new Blob([text], { type: "application/json" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -278,4 +331,5 @@
         }
     </script>
 </body>
+
 </html>
