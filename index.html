@@ -3,503 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Viewer & Formatter</title>
-    <meta name="description" content="Free online JSON Viewer & Formatter. Instantly validate, format, and beautify JSON data with syntax highlighting, collapsible objects, and export options. Perfect for developers and data analysis." />
+    <title>JSON Viewer & Formatter - Free Online JSON Beautifier</title>
+    <meta name="description" content="Validate, format, and beautify JSON data instantly. A free, secure online JSON viewer with syntax highlighting and collapsible nodes for developers." />
+    <link rel="canonical" href="https://stefwxters.github.io/Jsonviewer/" />
+    
+    <meta property="og:title" content="JSON Viewer & Formatter" />
+    <meta property="og:description" content="The fastest way to read and format JSON data online." />
+    <meta property="og:type" content="website" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "JSON Viewer & Formatter",
+      "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+      "applicationCategory": "DeveloperApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-color: #ffffff;
+            --secondary-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --text-main: #2d3436;
+            --accent-color: #0984e3;
+            --accent-hover: #07497a;
+            --json-key: #d63031;
+            --json-string: #27ae60;
+            --json-num: #0984e3;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
             padding: 20px;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        header h1 { font-size: 2.2rem; color: #1e272e; margin-bottom: 10px; }
+        header p { color: #7f8c8d; }
+
+        .tool-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            height: calc(100vh - 100px);
-        }
-
-        .header {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            color: white;
-            font-size: 2.5rem;
-            font-weight: 300;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            color: rgba(255,255,255,0.9);
-            font-size: 1.1rem;
+            margin-bottom: 40px;
         }
 
         .panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            height: 600px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
 
         .panel-header {
-            background: rgba(0,0,0,0.05);
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding: 12px 20px;
+            background: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 8px 8px 0 0;
         }
 
-        .panel-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
+        .btn {
             padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9rem;
             font-weight: 500;
-            transition: all 0.2s ease;
+            transition: 0.2s;
+            font-size: 13px;
         }
 
-        .btn-primary {
-            background: #3947D0;
-            color: white;
-        }
+        .btn-primary { background: var(--accent-color); color: white; border: none; }
+        .btn-primary:hover { background: var(--accent-hover); }
 
-        .btn-primary:hover {
-            background: #3947D0;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: rgba(0,0,0,0.1);
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(0,0,0,0.2);
-        }
-
-        .panel-content {
+        textarea, #jsonOutput {
             flex: 1;
-            padding: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #jsonInput {
-            flex: 1;
+            padding: 20px;
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-size: 14px;
             border: none;
-            padding: 20px;
-            font-size: 14px;
-            line-height: 1.5;
-            resize: none;
             outline: none;
-            background: transparent;
-            font-family: inherit;
-        }
-
-        #jsonInput::placeholder {
-            color: #999;
-            font-style: italic;
-        }
-
-        #jsonOutput {
-            flex: 1;
-            padding: 20px;
+            resize: none;
             overflow: auto;
-            background: #fafafa;
-            white-space: pre-wrap;
-            font-size: 14px;
-            line-height: 1.5;
+            white-space: pre;
         }
 
-        .json-key {
-            color: #0066cc;
-            font-weight: 600;
+        #jsonOutput { background: #fafafa; }
+
+        /* Syntax Highlighting */
+        .json-key { color: var(--json-key); font-weight: bold; }
+        .json-string { color: var(--json-string); }
+        .json-num { color: var(--json-num); }
+        .collapsible { cursor: pointer; color: #636e72; }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 800px;
+            margin: 0 auto 60px;
         }
 
-        .json-string {
-            color: #196227;
-        }
+        .faq-section h2 { margin-bottom: 20px; text-align: center; }
 
-        .json-number {
-            color: #005cc5;
-        }
-
-        .json-boolean {
-            color: #d73a49;
-            font-weight: 600;
-        }
-
-        .json-null {
-            color: #6f42c1;
-            font-weight: 600;
-        }
-
-        .json-punctuation {
-            color: #24292e;
-        }
-
-        .error {
-            color: #d73a49;
-            background: #ffeaea;
+        details {
+            background: var(--secondary-bg);
             padding: 15px;
-            margin: 10px;
+            margin-bottom: 10px;
             border-radius: 6px;
-            border-left: 4px solid #d73a49;
-        }
-
-        .status {
-            padding: 10px 20px;
-            background: rgba(0,0,0,0.05);
-            border-top: 1px solid rgba(0,0,0,0.1);
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .valid {
-            color: #22863a;
-        }
-
-        .invalid {
-            color: #d73a49;
-        }
-
-        .collapsible {
             cursor: pointer;
-            user-select: none;
-            display: inline-flex;
-            align-items: center;
         }
 
-        .collapsible:hover {
-            background: rgba(0,0,0,0.05);
-            border-radius: 3px;
+        summary { font-weight: 600; outline: none; }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border-color);
+            color: #95a5a6;
         }
 
-        .toggle-icon {
-            margin-right: 5px;
-            font-size: 12px;
-            color: #666;
-            transition: transform 0.2s ease;
-        }
-
-        .collapsed .toggle-icon {
-            transform: rotate(-90deg);
-        }
-
-        .collapsed + .json-content {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-            
-            .panel {
-                min-height: 300px;
-            }
+        @media (max-width: 850px) {
+            .tool-grid { grid-template-columns: 1fr; }
+            .panel { height: 400px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>JSON Viewer & Formatter</h1>
-            <p>Paste your JSON data and get it beautifully formatted instantly</p>
-        </div>
-        
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">Input JSON</div>
-                <div class="controls">
-                    <button class="btn-secondary" onclick="clearInput()">Clear</button>
-                    <button class="btn-primary" onclick="formatJSON()">Format</button>
-                </div>
-            </div>
-            <div class="panel-content">
-                <textarea 
-                    id="jsonInput" 
-                    placeholder='Paste your JSON here, for example:
-{
-  "name": "John Doe",
-  "age": 30,
-  "city": "New York"
-}'
-                    oninput="formatJSON()"
-                ></textarea>
-            </div>
-            <div class="status" id="inputStatus">Ready to format JSON</div>
-        </div>
 
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">Formatted Output</div>
-                <div class="controls">
-                    <button class="btn-secondary" onclick="copyOutput()">Copy</button>
-                    <button class="btn-secondary" onclick="downloadJSON()">Download</button>
+    <div class="container">
+        <header>
+            <h1>JSON Viewer & Formatter</h1>
+            <p>Clean, fast, and secure JSON beautification for developers.</p>
+        </header>
+
+        <main class="tool-grid">
+            <section class="panel">
+                <div class="panel-header">
+                    <span>Input JSON</span>
+                    <div>
+                        <button class="btn" onclick="clearInput()">Clear</button>
+                        <button class="btn btn-primary" onclick="formatJSON()">Beautify</button>
+                    </div>
                 </div>
-            </div>
-            <div class="panel-content">
+                <textarea id="jsonInput" spellcheck="false" placeholder="Paste your raw JSON here..."></textarea>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <span>Formatted Output</span>
+                    <div>
+                        <button class="btn" onclick="copyOutput()">Copy</button>
+                        <button class="btn" onclick="downloadJSON()">Download</button>
+                    </div>
+                </div>
                 <div id="jsonOutput"></div>
-            </div>
-            <div class="status" id="outputStatus">Formatted JSON will appear here</div>
-        </div>
+            </section>
+        </main>
+
+        <section class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <details>
+                <summary>What is a JSON Formatter?</summary>
+                <p>A JSON formatter is a tool that takes "minified" or messy JSON code and applies indentation and line breaks to make it human-readable. It also highlights syntax errors to help developers debug data structures.</p>
+            </details>
+
+            <details>
+                <summary>Is my data secure using this online tool?</summary>
+                <p>Yes. This tool processes all data locally in your browser using JavaScript. Your JSON data is never sent to a server, ensuring total privacy and security for sensitive information.</p>
+            </details>
+
+            <details>
+                <summary>Why is valid JSON important?</summary>
+                <p>JSON (JavaScript Object Notation) is the standard format for data exchange between servers and web applications. Valid JSON ensures that APIs can communicate without errors.</p>
+            </details>
+            
+            <details>
+                <summary>How do I convert JSON to a readable format?</summary>
+                <p>Simply paste your raw JSON string into our input box and click "Beautify". Our tool will instantly add proper indentation and syntax highlighting.</p>
+            </details>
+        </section>
     </div>
 
-    <script>
-        let parsedData = null;
+    <footer>
+        <p>&copy; 2024 JSON Viewer Tool. Built for performance.</p>
+    </footer>
 
+    <script>
         function formatJSON() {
             const input = document.getElementById('jsonInput').value.trim();
             const output = document.getElementById('jsonOutput');
-            const inputStatus = document.getElementById('inputStatus');
-            const outputStatus = document.getElementById('outputStatus');
 
             if (!input) {
-                output.innerHTML = '';
-                inputStatus.textContent = 'Ready to format JSON';
-                outputStatus.textContent = 'Formatted JSON will appear here';
+                output.innerHTML = "Result will appear here...";
                 return;
             }
 
             try {
-                parsedData = JSON.parse(input);
-                const formatted = formatJSONWithSyntaxHighlighting(parsedData, 0);
-                output.innerHTML = formatted;
-                
-                const charCount = JSON.stringify(parsedData).length;
-                const objectCount = countObjects(parsedData);
-                
-                inputStatus.innerHTML = `<span class="valid">✓ Valid JSON</span>`;
-                outputStatus.textContent = `${charCount} characters, ${objectCount} objects/arrays`;
-                
-            } catch (error) {
-                output.innerHTML = `<div class="error"><strong>Invalid JSON:</strong><br>${error.message}</div>`;
-                inputStatus.innerHTML = `<span class="invalid">✗ Invalid JSON</span>`;
-                outputStatus.textContent = 'Fix JSON syntax errors to see formatted output';
-                parsedData = null;
+                const parsed = JSON.parse(input);
+                output.innerHTML = syntaxHighlight(parsed);
+            } catch (e) {
+                output.innerHTML = `<span style="color:red">Invalid JSON: ${e.message}</span>`;
             }
         }
 
-        function formatJSONWithSyntaxHighlighting(obj, indent = 0) {
-            const spaces = '  '.repeat(indent);
-            const nextSpaces = '  '.repeat(indent + 1);
-
-            if (obj === null) {
-                return '<span class="json-null">null</span>';
+        function syntaxHighlight(json) {
+            if (typeof json !== 'string') {
+                json = JSON.stringify(json, null, 4);
             }
-
-            if (typeof obj === 'boolean') {
-                return `<span class="json-boolean">${obj}</span>`;
-            }
-
-            if (typeof obj === 'number') {
-                return `<span class="json-number">${obj}</span>`;
-            }
-
-            if (typeof obj === 'string') {
-                return `<span class="json-string">"${escapeHtml(obj)}"</span>`;
-            }
-
-            if (Array.isArray(obj)) {
-                if (obj.length === 0) {
-                    return '<span class="json-punctuation">[]</span>';
-                }
-
-                const id = 'collapse_' + Math.random().toString(36).substr(2, 9);
-                let result = `<span class="collapsible" onclick="toggleCollapse('${id}')">`;
-                result += `<span class="toggle-icon">▼</span>`;
-                result += `<span class="json-punctuation">[</span> <em>${obj.length} items</em>`;
-                result += `</span>\n`;
-                result += `<div class="json-content" id="${id}">`;
-                
-                for (let i = 0; i < obj.length; i++) {
-                    result += nextSpaces + formatJSONWithSyntaxHighlighting(obj[i], indent + 1);
-                    if (i < obj.length - 1) {
-                        result += '<span class="json-punctuation">,</span>';
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'json-num';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'json-key';
+                    } else {
+                        cls = 'json-string';
                     }
-                    result += '\n';
+                } else if (/true|false/.test(match)) {
+                    cls = 'json-boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'json-null';
                 }
-                
-                result += spaces + '<span class="json-punctuation">]</span>';
-                result += '</div>';
-                return result;
-            }
-
-            if (typeof obj === 'object') {
-                const keys = Object.keys(obj);
-                if (keys.length === 0) {
-                    return '<span class="json-punctuation">{}</span>';
-                }
-
-                const id = 'collapse_' + Math.random().toString(36).substr(2, 9);
-                let result = `<span class="collapsible" onclick="toggleCollapse('${id}')">`;
-                result += `<span class="toggle-icon">▼</span>`;
-                result += `<span class="json-punctuation">{</span> <em>${keys.length} properties</em>`;
-                result += `</span>\n`;
-                result += `<div class="json-content" id="${id}">`;
-
-                for (let i = 0; i < keys.length; i++) {
-                    const key = keys[i];
-                    result += nextSpaces;
-                    result += `<span class="json-key">"${escapeHtml(key)}"</span>`;
-                    result += '<span class="json-punctuation">: </span>';
-                    result += formatJSONWithSyntaxHighlighting(obj[key], indent + 1);
-                    if (i < keys.length - 1) {
-                        result += '<span class="json-punctuation">,</span>';
-                    }
-                    result += '\n';
-                }
-
-                result += spaces + '<span class="json-punctuation">}</span>';
-                result += '</div>';
-                return result;
-            }
-
-            return String(obj);
-        }
-
-        function toggleCollapse(id) {
-            const element = document.getElementById(id);
-            const toggleIcon = element.previousElementSibling.querySelector('.toggle-icon');
-            
-            if (element.style.display === 'none') {
-                element.style.display = 'block';
-                toggleIcon.textContent = '▼';
-            } else {
-                element.style.display = 'none';
-                toggleIcon.textContent = '▶';
-            }
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function countObjects(obj) {
-            let count = 0;
-            if (Array.isArray(obj) || (typeof obj === 'object' && obj !== null)) {
-                count = 1;
-                for (const key in obj) {
-                    if (obj.hasOwnProperty(key)) {
-                        count += countObjects(obj[key]);
-                    }
-                }
-            }
-            return count;
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
         }
 
         function clearInput() {
             document.getElementById('jsonInput').value = '';
-            formatJSON();
+            document.getElementById('jsonOutput').innerHTML = '';
         }
 
         function copyOutput() {
-            if (parsedData) {
-                const formatted = JSON.stringify(parsedData, null, 2);
-                navigator.clipboard.writeText(formatted).then(() => {
-                    const btn = event.target;
-                    const originalText = btn.textContent;
-                    btn.textContent = 'Copied!';
-                    btn.style.background = '#22863a';
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.style.background = '';
-                    }, 1000);
-                });
-            }
+            const text = document.getElementById('jsonOutput').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copied to clipboard!");
+            });
         }
 
         function downloadJSON() {
-            if (parsedData) {
-                const formatted = JSON.stringify(parsedData, null, 2);
-                const blob = new Blob([formatted], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'formatted.json';
-                a.click();
-                URL.revokeObjectURL(url);
-            }
+            const text = document.getElementById('jsonOutput').innerText;
+            if(!text) return;
+            const blob = new Blob([text], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "data.json";
+            a.click();
         }
-
-        // Load sample data on page load
-        window.addEventListener('load', () => {
-            const sampleData = {
-                "people": [
-                    {
-                        "id": 1,
-                        "name": "Alice Johnson",
-                        "gender": "female",
-                        "contact": {
-                            "email": "alice@example.com",
-                            "phone": "+1-555-0123"
-                        },
-                        "address": {
-                            "street": "123 Main St",
-                            "city": "New York",
-                            "state": "NY",
-                            "zip": "10001"
-                        },
-                        "interests": ["reading", "photography", "hiking"]
-                    },
-                    {
-                        "id": 2,
-                        "name": "Bob Smith",
-                        "gender": "male",
-                        "contact": {
-                            "email": "bob@example.com",
-                            "phone": "+1-555-0456"
-                        },
-                        "address": {
-                            "street": "456 Oak Ave",
-                            "city": "Los Angeles",
-                            "state": "CA",
-                            "zip": "90210"
-                        },
-                        "interests": ["cooking", "music", "travel"]
-                    }
-                ]
-            };
-            
-            document.getElementById('jsonInput').value = JSON.stringify(sampleData);
-            formatJSON();
-        });
     </script>
 </body>
 </html>
